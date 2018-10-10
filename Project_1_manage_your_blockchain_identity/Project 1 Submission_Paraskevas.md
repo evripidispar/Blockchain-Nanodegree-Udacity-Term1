@@ -1,0 +1,10 @@
+Evripidis Paraskevas-Project 1 Submission
+
+Wallet Address
+1HwtCkrhQTR5pyvrtAfSQ8AciVmoMjvEen
+
+Message
+1HwtCkrhQTR5pyvrtAfSQ8AciVmoMjvEen: Udacity rocks!
+
+Message Signature
+HxlT05GZssaZKHry8oldJ+zyFmB8Zq35yuxgrswqjbVqWxpUP6fUGxbQ2Hf1CVKumYuT023mypTwufTxYZPTN2k=
