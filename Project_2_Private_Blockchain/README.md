@@ -59,3 +59,5 @@ for (var i = 0; i < inducedErrorBlocks.length; i++) {
 ```
 blockchain.validateChain();
 ```
+
+Run node simplechain.js in your terminal to test the code
