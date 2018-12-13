@@ -32,7 +32,7 @@ Use Postman or a simple CURL on the terminal to send the requests. Supported end
 ### GET endpoint
 Fetch block at a particular blockheight
 ```
-http://localhost:<PORT>/block/blockheight
+http://localhost:8000/block/blockheight
 ```
 
 Example using CURL command:
@@ -44,7 +44,7 @@ Example using CURL command:
 ### POST endpoint
 Add new block
 ```
-http://localhost:<PORT>/block
+http://localhost:8000/block
 ```
 
 Example using CURL command:
