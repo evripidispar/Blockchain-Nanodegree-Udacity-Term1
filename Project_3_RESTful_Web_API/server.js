@@ -19,7 +19,7 @@ app.get('/', (req, res) => res.status(404).send({error: 'Accepted endpoints: POS
  	try {
  		const blockheight = req.params.Blockheight
  		const block = await blockChain.getBlock(blockheight)
- 		res.json(block)
+ 		res.send(JSON.parse(block))
  	}
  	catch (error) {
  		res.status(404).json({error: 'Block could not be found in the blockchain'})
@@ -40,7 +40,7 @@ app.get('/', (req, res) => res.status(404).send({error: 'Accepted endpoints: POS
  	await blockChain.addBlock(new Block(body))
   	const height = await blockChain.getBlockHeight()
   	const block = await blockChain.getBlock(height)
-  	res.status(201).json(block)
+  	res.status(201).send(JSON.parse(block))
  })
 
  app.listen(8000, () => console.log('API listening on port 8000'))
