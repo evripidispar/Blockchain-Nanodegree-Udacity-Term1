@@ -13,7 +13,7 @@ app.use(bodyParser.json())
 app.get('/', (req, res) => res.status(404).send({error: 'Accepted endpoints: POST /block or GET /block/{Blockheight}'}))
 
 
- //GET Block endpoint using URL path with block height parameter. Example URL path http://localhost:8000/block/{Blockheigh}
+ //GET Block endpoint using URL path with block height parameter. Example URL path http://localhost:8000/block/{Blockheight}
  
  app.get('/block/:Blockheight', async (req, res) => {
  	try {
