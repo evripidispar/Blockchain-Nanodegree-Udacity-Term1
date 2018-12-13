@@ -8,8 +8,6 @@ A RESTful blockchain web API that adds new block to blockchain and also let you 
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
 ### Prerequisites
 
 Installing Node and NPM is pretty straightforward using the installer package available from the (Node.js® web site)[https://nodejs.org/en/].
@@ -29,10 +27,10 @@ Run the server
 node server.js
 ```
 
-Use Postman or a simple CURL on the terminal to send the requests to the base url http://localhost:8000 with one of the below supported endpoints:
+Use Postman or a simple CURL on the terminal to send the requests. Supported endpoints:
 
 ### GET endpoint
-**Fetch block at a particular blockheight**
+Fetch block at a particular blockheight
 ```
 http://localhost:<PORT>/block/blockheight
 ```
@@ -44,8 +42,7 @@ Example using CURL command:
 ```
 
 ### POST endpoint
-
-**Add new block**
+Add new block
 ```
 http://localhost:<PORT>/block
 ```
