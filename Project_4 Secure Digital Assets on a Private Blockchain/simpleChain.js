@@ -81,6 +81,83 @@ class Blockchain{
       });
     }
 
+    //get block by height (added for Web API GET endpoint), JSON response
+    getBlockByHeight (key) {
+      return new Promise((resolve, reject)=>{
+        db.get(key, function(err, value)=>{
+          if (value === undefined){
+            return reject('Not found Block#'+key)
+          }
+          else if (err){
+            reject(err)
+            return console.log('Error')
+          }
+          else{
+            value =JSON.parse(value)
+            if (parseInt(key) > 0) {
+              value.body.star.storyDecoded = new Buffer(value.body.star.story, 'hex').toString()
+            }
+            return resolve(value)
+          }
+        })
+      })
+    }
+
+    //get block by Hash (added for Web API GET endpoint), JSON response
+    getBlockbyHash (hash){
+      let block
+      return new Promise((resolve,reject) => {
+        db.createReadStream().on('data', function(data){
+          block = JSON.parse(data.value)
+
+          if (block.hash === hash){
+            //Check not Genesis Block
+            if (parseInt(data.key)>0){
+              block.body.star.storyDecoded = new Buffer(block.body.star.story, 'hex').toString()
+              return resolve(block)
+            }
+            else {
+              return resolve(block)
+            }
+          }
+        })
+        .on('error', function(err){
+          console.log('Unable to read Data Stream', err);
+          return reject(err)
+        })
+        .on('close', function(){
+          return reject('Not found')
+        })
+      })
+    }
+
+    //get block by Address (added for Web API GET endpoint), JSON response
+    getBlockbyAddress (address){
+      const blocks = []
+      let block
+      return new Promise((resolve,reject) => {
+        db.createReadStream().on('data', function(data){
+            
+            //Check not Genesis Block
+            if (parseInt(data.key)>0){
+              block = JSON.parse(data.value)
+
+              if (block.body.address === address){
+                block.body.star.storyDecoded = new Buffer(block.body.star.story, 'hex').toString()
+                blocks.push(block)
+              }
+            }
+          })
+        .on('error', function(err){
+          console.log('Unable to read Data Stream', err);
+          return reject(err)
+        })
+        .on('close', function(){
+          return resolve(blocks)
+        })
+      })
+    }
+
     // validate block
     async validateBlock(blockHeight){
       // get block object

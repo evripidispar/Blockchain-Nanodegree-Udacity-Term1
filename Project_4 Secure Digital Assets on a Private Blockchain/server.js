@@ -2,15 +2,26 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const Block = require('./block')
 const BlockChain = require('./simpleChain')
-
 const app = express()
+const compression = require('compression')
+const StarClass = require('./star-utils')
 
 // Create the blockchain object
 let blockChain = new BlockChain();
 
-app.use(bodyParser.json())
+//Application-level middleware functions using express
 
-app.get('/', (req, res) => res.status(404).send({error: 'Accepted endpoints: POST /block or GET /block/{Blockheight}'}))
+validateAdressParameter = async (req, res, next) => {
+	const starObj = new StarClass(req)
+	if(!starObj.req.body.address){
+		return res.status(400).json({error: 'cannot create block with empty body string'})
+	}
+}
+
+app.use(compression())
+app.use(bodyParser.json())
+app.listen(8000, () => console.log('API listening on port 8000'))
+app.get('/', (req, res) => res.status(404).send({error: 'Check README.md for accepted endpoints'}))
 
 
  //GET Block endpoint using URL path with block height parameter. Example URL path http://localhost:8000/block/{Blockheight}
@@ -43,7 +54,7 @@ app.get('/', (req, res) => res.status(404).send({error: 'Accepted endpoints: POS
   	res.status(201).send(JSON.parse(block))
  })
 
- app.listen(8000, () => console.log('API listening on port 8000'))
+ 
 
 
 
