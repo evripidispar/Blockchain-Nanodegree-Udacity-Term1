@@ -13,9 +13,25 @@ let blockChain = new BlockChain();
 
 validateAdressParameter = async (req, res, next) => {
 	const starObj = new StarClass(req)
-	if(!starObj.req.body.address){
-		return res.status(400).json({error: 'cannot create block with empty body string'})
+
+	try{
+		if(!starObj.req.body.address){
+			return res.status(400).json({error: 'Please fill the address parameter of POST request'})
+		}
+	} catch (error) {
+		res.status(400).json({
+
+		}
 	}
+	next()
+}
+
+validateSignatureParameter = async (req, res, next) => {
+	const starObj = new StarClass(req)
+	if(!starObj.req.body.signature){
+		return res.status(400).json({error: 'Please fill the signature parameter of POST request'})
+	}
+	next()
 }
 
 app.use(compression())
