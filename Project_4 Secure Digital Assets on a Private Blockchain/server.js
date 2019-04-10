@@ -99,22 +99,6 @@ app.post('/requestValidation', (req, res) => {
 	}
 })
 
-
-
-
- //GET Block endpoint using URL path with block height parameter. Example URL path http://localhost:8000/block/{Blockheight}
- 
- app.get('/block/:Blockheight', async (req, res) => {
- 	try {
- 		const blockheight = req.params.Blockheight
- 		const block = await blockChain.getBlock(blockheight)
- 		res.send(JSON.parse(block))
- 	}
- 	catch (error) {
- 		res.status(404).json({error: 'Block could not be found in the blockchain'})
- 	}
- })
-
 // POST Block endpoint using key/value pair within request body. Example URL path http://localhost:8000/block
 
  app.post('/block', async (req, res)=> {
@@ -126,11 +110,74 @@ app.post('/requestValidation', (req, res) => {
  		return res.status(400).json({error: 'body parameter is not defined'})
  	}
 
+ 	let body = {
+ 		address: req.body.address,
+ 		star: {
+ 			ra: req.body.star.ra,
+ 			dec: req.body.star.dec,
+ 			mag: req.body.star.mag,
+ 			cen: req.body.star.cen,
+ 			story: new Buffer(req.body.star.story).toString('hex')
+ 		}
+ 	}
+
  	await blockChain.addBlock(new Block(body))
   	const height = await blockChain.getBlockHeight()
-  	const block = await blockChain.getBlock(height)
-  	res.status(201).send(JSON.parse(block))
+  	const block = await blockChain.getBlockByHeight(height)
+
+  	delete mempool[address]
+  	//block created
+  	res.status(201).json(block)
  })
+
+
+ //GET Block endpoint using URL path with block hash parameter. Example URL path http://localhost:8000/stars/hash:hash
+ app.get('/stars/hash:hash', async (req, res) => {
+ 	try {
+ 		const hash = req.params.hash.slice(1)
+ 		const response = await blockChain.getBlockByHash(hash)
+ 		res.send(response)
+ 	}
+ 	catch (error) {
+ 		res.status(404).json({
+			status: 404
+			message: 'Block not found'
+		})
+ 	}
+ })
+
+ //GET Block endpoint using URL path with wallet address parameter. Example URL path http://localhost:8000/stars/address:address
+ app.get('/stars/address:address', async (req, res) => {
+ 	try {
+ 		const address = req.params.address.slice(1)
+ 		const response = await blockChain.getBlock(address)
+ 		res.send(response)
+ 	}
+ 	catch (error) {
+ 		res.status(404).json({
+			status: 404
+			message: 'Block not found'
+		})
+ 	}
+ })
+
+//GET Block endpoint using URL path with block height parameter. Example URL path http://localhost:8000/block/:height
+ app.get('/block/:height', async (req, res) => {
+ 	try {
+ 		const blockheight = req.params.height
+ 		const response = await blockChain.getBlockByHeight(blockheight)
+ 		res.send(response)
+ 	}
+ 	catch (error) {
+ 		res.status(404).json({
+			status: 404
+			message: 'Block not found'
+		})
+ 	}
+ })
+
+
+
 
  
 

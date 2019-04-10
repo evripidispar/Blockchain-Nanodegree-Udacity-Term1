@@ -82,15 +82,15 @@ class Blockchain{
     }
 
     //get block by height (added for Web API GET endpoint), JSON response
-    getBlockByHeight (key) {
+    getBlockByHeight(key){
       return new Promise((resolve, reject)=>{
-        db.get(key, function(err, value)=>{
-          if (value === undefined){
-            return reject('Not found Block#'+key)
-          }
-          else if (err){
+        db.get(key, function(err, value){
+          //if (value === undefined){
+          //  return reject('Not found Block#'+key)
+          //}
+          if (err){
             reject(err)
-            return console.log('Error')
+            return console.log('Not found Block#'+ key);
           }
           else{
             value =JSON.parse(value)
@@ -104,14 +104,14 @@ class Blockchain{
     }
 
     //get block by Hash (added for Web API GET endpoint), JSON response
-    getBlockbyHash (hash){
+    getBlockByHash(hash){
       let block
       return new Promise((resolve,reject) => {
         db.createReadStream().on('data', function(data){
           block = JSON.parse(data.value)
 
           if (block.hash === hash){
-            //Check not Genesis Block
+            //Check if not Genesis Block
             if (parseInt(data.key)>0){
               block.body.star.storyDecoded = new Buffer(block.body.star.story, 'hex').toString()
               return resolve(block)
@@ -132,7 +132,7 @@ class Blockchain{
     }
 
     //get block by Address (added for Web API GET endpoint), JSON response
-    getBlockbyAddress (address){
+    getBlocksByAddress(address){
       const blocks = []
       let block
       return new Promise((resolve,reject) => {
