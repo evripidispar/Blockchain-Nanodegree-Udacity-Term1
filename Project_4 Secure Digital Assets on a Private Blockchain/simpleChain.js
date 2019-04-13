@@ -85,9 +85,6 @@ class Blockchain{
     getBlockByHeight(key){
       return new Promise((resolve, reject)=>{
         db.get(key, function(err, value){
-          //if (value === undefined){
-          //  return reject('Not found Block#'+key)
-          //}
           if (err){
             reject(err)
             return console.log('Not found Block#'+ key);
