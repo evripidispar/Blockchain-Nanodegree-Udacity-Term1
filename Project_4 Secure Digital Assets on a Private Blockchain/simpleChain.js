@@ -3,6 +3,7 @@
 |  =========================================================*/
 
 const SHA256 = require('crypto-js/sha256');
+const hex2ascii = require('hex2ascii');
 const level = require('level');
 const chainDB = './chaindata';
 const db = level(chainDB);
@@ -34,7 +35,7 @@ class Blockchain{
     // Block height
     console.log('Block Height:'+ newBlock.height);
     // UTC timestamp
-    newBlock.time = new Date().getTime().toString().slice(0,-3);
+    newBlock.time = Date.now().toString().slice(0,-3);
     console.log('Block Timestamp:'+ newBlock.time)
     // previous block hash
     if(newBlock.height>0){
@@ -92,7 +93,7 @@ class Blockchain{
           else{
             value =JSON.parse(value)
             if (parseInt(key) > 0) {
-              value.body.star.storyDecoded = Buffer.from(value.body.star.story, 'hex').toString()
+              value.body.star.storyDecoded = hex2ascii(value.body.star.story)
             }
             return resolve(value)
           }
@@ -110,7 +111,7 @@ class Blockchain{
           if (block.hash === hash){
             //Check if not Genesis Block
             if (parseInt(data.key)>0){
-              block.body.star.storyDecoded = Buffer.from(block.body.star.story, 'hex').toString()
+              block.body.star.storyDecoded = hex2ascii(block.body.star.story)
               return resolve(block)
             }
             else {
@@ -140,7 +141,7 @@ class Blockchain{
               block = JSON.parse(data.value)
 
               if (block.body.address === address){
-                block.body.star.storyDecoded = Buffer.from(block.body.star.story, 'hex').toString()
+                block.body.star.storyDecoded = hex2ascii(block.body.star.story)
                 blocks.push(block)
               }
             }
