@@ -4,10 +4,6 @@ const Block = require('./block')
 const BlockChain = require('./simpleChain')
 const app = express()
 const Mempool = require('./mempool-utils')
-//const bitcoinMessage = require('bitcoinjs-message')
-//const compression = require('compression')
-//const StarClass = require('./star-utils')
-
 
 //create mempool to store the validation requests
 const mempool = []
@@ -87,8 +83,7 @@ app.post('/requestValidation', (req, res) => {
 	}*/
 })
 
-//POST message signature validation endpoint
-
+//Web API POST message signature validation endpoint
 app.post('/message-signature/validate', (req, res)=>{
 	const {address, signature} = req.body
 
@@ -107,20 +102,15 @@ app.post('/message-signature/validate', (req, res)=>{
 		message: error.message
 	})
 	}
-
-	validRequest = MemPoolObj.validateRequestByWallet(address, signature)
-	res.json(validRequest)
-
-
-	if((mempool.hasOwnProperty(address)) && (mempool[address].validationWindow > 0)){
-		let status = {
-			address: address,
-			requestTimeStamp: mempool[address].timestamp,
-			message: mempool
-		}
-
-		}
-
+	try{
+		validRequestObj = MemPoolObj.validateRequestByWallet(address, signature)
+		res.json(validRequestObj)
+	} catch (error) {
+		res.status(401).json({
+		status: 401,
+		message: error.message
+	})
+	}
 
 })
 
@@ -134,15 +124,16 @@ app.post('/message-signature/validate', (req, res)=>{
  	//else if (body === undefined){
  	//	return res.status(400).json({error: 'body parameter is not defined'})
  	//}
+ 	const body = {address, star} = req.body
 
- 	let body = {
- 		address: req.body.address,
- 		star: {
- 			ra: req.body.star.ra,
- 			dec: req.body.star.dec,
- 			mag: req.body.star.mag,
- 			cen: req.body.star.cen,
- 			story: new Buffer(req.body.star.story).toString('hex')
+ 	//let body = {
+ 	//	address: req.body.address,
+ 	body.star: {
+ 		ra: star.ra,
+ 		dec: star.dec,
+ 		mag: star.mag,
+ 		cen: star.cen,
+ 		story: new Buffer(star.story).toString('hex')
  		}
  	}
 
@@ -150,7 +141,7 @@ app.post('/message-signature/validate', (req, res)=>{
   	const height = await blockChain.getBlockHeight()
   	const block = await blockChain.getBlockByHeight(height)
 
-  	delete mempool[address]
+  	MemPoolObj.removeValidationRequest(address)
   	//block created
   	res.status(201).json(block)
  })
