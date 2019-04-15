@@ -92,7 +92,7 @@ class Blockchain{
           else{
             value =JSON.parse(value)
             if (parseInt(key) > 0) {
-              value.body.star.storyDecoded = new Buffer(value.body.star.story, 'hex').toString()
+              value.body.star.storyDecoded = Buffer.from(value.body.star.story, 'hex').toString()
             }
             return resolve(value)
           }
@@ -110,7 +110,7 @@ class Blockchain{
           if (block.hash === hash){
             //Check if not Genesis Block
             if (parseInt(data.key)>0){
-              block.body.star.storyDecoded = new Buffer(block.body.star.story, 'hex').toString()
+              block.body.star.storyDecoded = Buffer.from(block.body.star.story, 'hex').toString()
               return resolve(block)
             }
             else {
@@ -140,7 +140,7 @@ class Blockchain{
               block = JSON.parse(data.value)
 
               if (block.body.address === address){
-                block.body.star.storyDecoded = new Buffer(block.body.star.story, 'hex').toString()
+                block.body.star.storyDecoded = Buffer.from(block.body.star.story, 'hex').toString()
                 blocks.push(block)
               }
             }

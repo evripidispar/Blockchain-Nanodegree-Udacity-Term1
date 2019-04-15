@@ -112,7 +112,7 @@ app.post('/message-signature/validate', (req, res)=>{
  		if((!address) || (!star)) {
  			throw new Error('Fill the address and star parameters of block POST request')
  		}
- 		if (new Buffer(star.story).length > MAX_BYTES) {
+ 		if (Buffer.from(star.story).length > MAX_BYTES) {
       		throw new Error('Your star story should have maximum size of 500 bytes')
     	}
  		if (typeof star.dec !== 'string' || typeof star.ra !== 'string' || typeof star.story !== 'string' || !star.dec.length || !star.ra.length || !star.story.length) {
@@ -129,7 +129,7 @@ app.post('/message-signature/validate', (req, res)=>{
  				dec: star.dec,
  				mag: star.mag,
  				cen: star.cen,
- 				story: new Buffer(star.story).toString('hex') //encode story
+ 				story: Buffer.from(star.story).toString('hex') //encode story
  			}
 
  			await blockChain.addBlock(new Block(body))
