@@ -11,7 +11,8 @@ class Mempool{
 	}
 
 	AddRequestValidation(address){
-		let timestamp = Date.now()
+		let timestampRaw = Date.now()
+		let timestamp = timestampRaw.toString().slice(0,-3)
 		let message = `${address}:${timestamp}:starRegistry`
 		let validationWindow = TimeoutRequestsWindowTime/1000
 
@@ -25,13 +26,13 @@ class Mempool{
 		//Add request validation (new or update existing that have not timeout)
 		if((!this.mempool.hasOwnProperty(address)) || ((this.mempool.hasOwnProperty(address)) && (!this.verifyTimeLeft(address)))){
 			console.log('Add new request')
-			this.mempool[address] = {message, timestamp, validationWindow}
+			this.mempool[address] = {message, timestamp, timestampRaw, validationWindow}
 			//console.log(this.mempool[address])
 			//this.timeoutRequests[address] = setTimeout(function(){delete this.mempool[address]}, TimeoutRequestsWindowTime)
 			return requestObject
 		}
 		else {
-			let timeElapse = Date.now() - this.mempool[address].timestamp
+			let timeElapse = Date.now() - this.mempool[address].timestampRaw
 			let timeLeft = Math.floor((TimeoutRequestsWindowTime-timeElapse)/1000)
 
 			this.mempool[address].message = message
@@ -101,7 +102,7 @@ class Mempool{
 
 	verifyTimeLeft(address){
 		let validationStartTimer = Date.now() - TimeoutRequestsWindowTime
-		if (this.mempool[address].timestamp < validationStartTimer){
+		if (this.mempool[address].timestampRaw < validationStartTimer){
 			return false
 		}
 		else { 
