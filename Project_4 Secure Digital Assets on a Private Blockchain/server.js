@@ -30,15 +30,14 @@ app.post('/requestValidation', (req, res) => {
 		if(!req.body.address){
 			throw new Error('Fill the address parameter of POST request')
 		}
+		requestObject = MemPoolObj.AddRequestValidation(address)
+		res.json(requestObject)
 	} catch (error) {
 		res.status(401).json({
 		status: 401,
 		message: error.message
 	})
 	}
-
-	requestObject = MemPoolObj.AddRequestValidation(address)
-	res.json(requestObject)
 
 
 	/*const timestamp = Date.now()
