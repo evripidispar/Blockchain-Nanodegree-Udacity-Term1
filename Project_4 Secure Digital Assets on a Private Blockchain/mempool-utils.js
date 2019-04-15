@@ -1,4 +1,6 @@
 const bitcoinMessage = require('bitcoinjs-message')
+
+//Verification window is 5 minutes
 const TimeoutRequestsWindowTime = 5*60*1000
 
 class Mempool{
@@ -21,10 +23,10 @@ class Mempool{
 		}
 
 		//Add request validation (new or update existing that have not timeout)
-		if((!this.mempool.hasOwnProperty(address)) || ((this.mempool.hasOwnProperty(address)) && (this.isExpired(address)))){
+		if((!this.mempool.hasOwnProperty(address)) || ((this.mempool.hasOwnProperty(address)) && (!this.verifyTimeLeft(address)))){
 			console.log('Add new request')
 			this.mempool[address] = {message, timestamp, validationWindow}
-			console.log(this.mempool[address])
+			//console.log(this.mempool[address])
 			//this.timeoutRequests[address] = setTimeout(function(){delete this.mempool[address]}, TimeoutRequestsWindowTime)
 			return requestObject
 		}
@@ -53,7 +55,7 @@ class Mempool{
 			return validRequest
 		}
 
-		if(!this.isExpired(address)){
+		if(this.verifyTimeLeft(address)){
 			let status = {
 				address: address,
 				requestTimeStamp: this.mempool[address].timestamp,
@@ -69,7 +71,6 @@ class Mempool{
 
 			try{
 				isValid = bitcoinMessage.verify(this.mempool[address].message, address, signature)
-				console.log(isValid)
 			} catch (error){
 				isValid = false
 				validRequest.registerStar = false
@@ -80,7 +81,7 @@ class Mempool{
 			if (isValid){
 				validRequest.registerStar = true
 				this.mempoolValid[address] = validRequest
-				console.log(validRequest)
+				//console.log(validRequest)
 				return validRequest	
 			}
 			else{
@@ -95,15 +96,30 @@ class Mempool{
 	removeValidationRequest(address){
 		delete this.mempool[address]
 		delete this.mempoolValid[address]
+		console.log('DELETE request')
 	}
 
-	isExpired(address){
+	verifyTimeLeft(address){
 		let validationStartTimer = Date.now() - TimeoutRequestsWindowTime
 		if (this.mempool[address].timestamp < validationStartTimer){
-			return true
+			return false
 		}
 		else { 
-			return false
+			return true
+		}
+	}
+
+	verifyAddressRequest(address){
+		if (this.mempoolValid.hasOwnProperty(address)){
+			return true
+		}
+		else{
+			if (this.mempool.hasOwnProperty(address)){
+				throw new Error ('Request should be validated before submitting the star')
+			}
+			else{
+				throw new Error('Address has not requested validation, please add a new request')
+			}
 		}
 	}
 }

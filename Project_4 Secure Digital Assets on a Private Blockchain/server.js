@@ -88,21 +88,9 @@ app.post('/message-signature/validate', (req, res)=>{
 	const {address, signature} = req.body
 
 	try{
-		if(!address) {
-			throw new Error('Fill the address parameter of POST request')
+		if((!address) || (!signature)) {
+			throw new Error('Fill the address and signatures parameters of POST request')
 		}
-		else {
-			if (!signature){
-				throw new Error('Fill the signature parameter of POST request')
-			}
-		}
-	} catch (error) {
-		res.status(401).json({
-		status: 401,
-		message: error.message
-	})
-	}
-	try{
 		validRequestObj = MemPoolObj.validateRequestByWallet(address, signature)
 		res.json(validRequestObj)
 	} catch (error) {
@@ -111,39 +99,56 @@ app.post('/message-signature/validate', (req, res)=>{
 		message: error.message
 	})
 	}
-
 })
 
 // POST Block endpoint using key/value pair within request body. Example URL path http://localhost:8000/block
 
  app.post('/block', async (req, res)=> {
- 	//const body = req.body.body
- 	//if (body === '') {
- 	//	return res.status(400).json({error: 'cannot create block with empty body string'})
- 	//}
- 	//else if (body === undefined){
- 	//	return res.status(400).json({error: 'body parameter is not defined'})
- 	//}
+ 	const MAX_BYTES = 500
+ 	const isASCII = ((str) => /^[\x00-\x7F]*$/.test(str))
  	const body = {address, star} = req.body
 
- 	//let body = {
- 	//	address: req.body.address,
- 	body.star: {
- 		ra: star.ra,
- 		dec: star.dec,
- 		mag: star.mag,
- 		cen: star.cen,
- 		story: new Buffer(star.story).toString('hex')
+ 	try{
+ 		if((!address) || (!star)) {
+ 			throw new Error('Fill the address and star parameters of block POST request')
  		}
- 	}
+ 		if (new Buffer(star.story).length > MAX_BYTES) {
+      		throw new Error('Your star story should have maximum size of 500 bytes')
+    	}
+ 		if (typeof star.dec !== 'string' || typeof star.ra !== 'string' || typeof star.story !== 'string' || !star.dec.length || !star.ra.length || !star.story.length) {
+      		throw new Error('Your star information should include non-empty string properties dec, ra and story')
+    	}
+    	if (!isASCII(star.story)) {
+      		throw new Error('Your star story contains non-ASCII symbols')
+    	}
 
- 	await blockChain.addBlock(new Block(body))
-  	const height = await blockChain.getBlockHeight()
-  	const block = await blockChain.getBlockByHeight(height)
+    	let isValid = MemPoolObj.verifyAddressRequest(address)
+   		if (isValid){
+   			body.star = {
+ 				ra: star.ra,
+ 				dec: star.dec,
+ 				mag: star.mag,
+ 				cen: star.cen,
+ 				story: new Buffer(star.story).toString('hex') //encode story
+ 			}
 
-  	MemPoolObj.removeValidationRequest(address)
-  	//block created
-  	res.status(201).json(block)
+ 			await blockChain.addBlock(new Block(body))
+  			const height = await blockChain.getBlockHeight()
+  			const block = await blockChain.getBlockByHeight(height)
+
+  			MemPoolObj.removeValidationRequest(address)
+  			//block created
+  			res.status(201).json(block)
+   			}
+   		//else {
+   		//	throw new Error('The request has not been validated')
+   		//}
+  	} catch (error) {
+		res.status(401).json({
+		status: 401,
+		message: error.message
+	})
+	}
  })
 
 
@@ -153,8 +158,7 @@ app.post('/message-signature/validate', (req, res)=>{
  		const hash = req.params.hash.slice(1)
  		const response = await blockChain.getBlockByHash(hash)
  		res.send(response)
- 	}
- 	catch (error) {
+ 	} catch (error) {
  		res.status(404).json({
 			status: 404,
 			message: 'Block not found'
@@ -166,10 +170,9 @@ app.post('/message-signature/validate', (req, res)=>{
  app.get('/stars/address:address', async (req, res) => {
  	try {
  		const address = req.params.address.slice(1)
- 		const response = await blockChain.getBlock(address)
+ 		const response = await blockChain.getBlocksByAddress(address)
  		res.send(response)
- 	}
- 	catch (error) {
+ 	} catch (error) {
  		res.status(404).json({
 			status: 404,
 			message: 'Block not found'
@@ -183,19 +186,10 @@ app.post('/message-signature/validate', (req, res)=>{
  		const blockheight = req.params.height
  		const response = await blockChain.getBlockByHeight(blockheight)
  		res.send(response)
- 	}
- 	catch (error) {
+ 	} catch (error) {
  		res.status(404).json({
 			status: 404,
 			message: 'Block not found'
 		})
  	}
  })
-
-
-
-
- 
-
-
-
