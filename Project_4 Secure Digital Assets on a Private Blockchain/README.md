@@ -50,22 +50,71 @@ Endpoint definition
 ```
 http://localhost:8000/requestValidation
 ```
-Parameter(s)
+Parameter
 ```
 address - A bitcoin address, take it from Electrum
 ```
+Example in Postman
+<img width="975" alt="Screen Shot 2019-04-15 at 11 33 16 PM" src="https://user-images.githubusercontent.com/5134520/56181560-ff775d00-5fdb-11e9-8aaa-87148055dacc.png">
 
-Example in Postman:
+### Blockchain ID message signature validation (POST endpoint)
+Endpoint definition
+```
+http://localhost:8000/message-signature/validate
+```
+Parameters
+```
+address - A bitcoin address, take it from Electrum
+signature - Sign/Verify the message using Electrum wallet
+```
+Example in Postman
+<img width="975" alt="Screen Shot 2019-04-15 at 11 34 56 PM" src="https://user-images.githubusercontent.com/5134520/56181559-ff775d00-5fdb-11e9-9591-13040e78ed2f.png">
 
-
-### POST endpoint
-Add new block
+### Star Registration (POST endpoint)
+Endpoint defition
 ```
 http://localhost:8000/block
 ```
-
-Example using CURL command:
-
+Parameters
 ```
-curl -X "POST" "http://localhost:8000/block" -H 'Content-Type: application/json' -d $'{"body":"New block added"}'
+address - The same bitcoin address you used
+star - Containing dec, ra and story with maximum 500 bytes size
 ```
+Example in Postman
+<img width="963" alt="Screen Shot 2019-04-15 at 11 43 54 PM" src="https://user-images.githubusercontent.com/5134520/56181558-ff775d00-5fdb-11e9-920d-150f9cf3ee8c.png">
+
+### Get block by hash (GET endpoint)
+Endpoint defition
+```
+http://localhost:8000/stars/hash:[HASH]
+```
+Parameter
+```
+hash - The hash of one of the added blocks
+```
+Example in Postman
+<img width="974" alt="Screen Shot 2019-04-15 at 11 48 47 PM" src="https://user-images.githubusercontent.com/5134520/56181556-ff775d00-5fdb-11e9-93c6-7115e837dd3e.png">
+
+### Get block by address (GET endpoint)
+Endpoint defition
+```
+http://localhost:8000/stars/address:[ADDRESS]
+```
+Parameter
+```
+address - The same bitcoin address you used
+```
+Example in Postman
+<img width="968" alt="Screen Shot 2019-04-15 at 11 51 15 PM" src="https://user-images.githubusercontent.com/5134520/56181555-ff775d00-5fdb-11e9-9dd5-48be901c9f18.png">
+
+### Get block by height (GET endpoint)
+Endpoint defition
+```
+http://localhost:8000/block/[HEIGHT]
+```
+Parameter
+```
+height - The height of the block
+```
+Example in Postman
+<img width="967" alt="Screen Shot 2019-04-15 at 11 45 49 PM" src="https://user-images.githubusercontent.com/5134520/56181557-ff775d00-5fdb-11e9-84e4-49e3311b9984.png">
