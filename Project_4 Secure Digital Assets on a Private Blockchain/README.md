@@ -1,6 +1,6 @@
-# RESTful web API - private blockchain
+# Secure Digital Assets on a Private Blockchain
 
-A RESTful blockchain web API that adds new block to blockchain and also let you see the blocks at a particular blockheight
+Star Registry Service that allows users to claim ownership of their favorite star in the night sky.
 
 ## Architecture
 - Node.js
@@ -19,6 +19,22 @@ Installing Node and NPM is pretty straightforward using the installer package av
 npm install
 ```
 
+```
+npm install <module_name> --save
+```
+
+```
+"dependencies": {
+   "bitcoinjs-lib": "^4.0.2",
+   "bitcoinjs-message": "^2.0.0",
+   "body-parser": "^1.18.3",
+   "crypto-js": "^3.1.9-1",
+   "express": "^4.16.4",
+   "hex2ascii": "0.0.3",
+   "level": "^4.0.0",
+ }
+```
+
 ## Testing
 
 Run the server
@@ -27,19 +43,20 @@ Run the server
 node server.js
 ```
 
-Use Postman or a simple CURL on the terminal to send the requests. Supported endpoints:
+Use Postman, a powerful tool used to test web services, or a simple CURL on the terminal to send the requests. Supported endpoints:
 
-### GET endpoint
-Fetch block at a particular blockheight
+### Blockchain ID validation request (POST endpoint)
+Endpoint definition
 ```
-http://localhost:8000/block/blockheight
+http://localhost:8000/requestValidation
+```
+Parameter(s)
+```
+address - A bitcoin address, take it from Electrum
 ```
 
-Example using CURL command:
+Example in Postman:
 
-```
- curl http://localhost:8000/block/0
-```
 
 ### POST endpoint
 Add new block
