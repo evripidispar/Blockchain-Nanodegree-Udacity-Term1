@@ -124,8 +124,8 @@ app.post('/message-signature/validate', (req, res)=>{
     	let isValid = MemPoolObj.verifyAddressRequest(address)
    		if (isValid){
    			body.star = {
+   				dec: star.dec,
  				ra: star.ra,
- 				dec: star.dec,
  				mag: star.mag,
  				cen: star.cen,
  				story: Buffer.from(star.story).toString('hex') //encode story

@@ -57,11 +57,14 @@ class Mempool{
 		}
 
 		if(this.verifyTimeLeft(address)){
+			let timeElapse = Date.now() - this.mempool[address].timestampRaw
+			let timeLeft = Math.floor((TimeoutRequestsWindowTime-timeElapse)/1000)
+
 			let status = {
 				address: address,
 				requestTimeStamp: this.mempool[address].timestamp,
 				message: this.mempool[address].message,
-				validationWindow: this.mempool[address].validationWindow,
+				validationWindow: timeLeft,
 				messageSignature: false
 			}
 
