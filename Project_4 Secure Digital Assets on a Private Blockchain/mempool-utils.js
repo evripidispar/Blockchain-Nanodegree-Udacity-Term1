@@ -15,6 +15,7 @@ class Mempool{
 		let timestamp = timestampRaw.toString().slice(0,-3)
 		let message = `${address}:${timestamp}:starRegistry`
 		let validationWindow = TimeoutRequestsWindowTime/1000
+		let self = this
 
 		const requestObject = {
 			walletAddress: address,
@@ -28,7 +29,7 @@ class Mempool{
 			console.log('Add new request')
 			this.mempool[address] = {message, timestamp, timestampRaw, validationWindow}
 			//console.log(this.mempool[address])
-			//this.timeoutRequests[address] = setTimeout(function(){delete this.mempool[address]}, TimeoutRequestsWindowTime)
+			this.timeoutRequests[address] = setTimeout(function(){delete self.mempool[address]}, TimeoutRequestsWindowTime)
 			return requestObject
 		}
 		else {
@@ -85,6 +86,7 @@ class Mempool{
 			if (isValid){
 				validRequest.registerStar = true
 				this.mempoolValid[address] = validRequest
+				delete this.timeoutRequests[address]
 				//console.log(validRequest)
 				return validRequest	
 			}
